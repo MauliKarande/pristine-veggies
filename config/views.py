@@ -59,25 +59,3 @@ def customer_logout(request):
     request.session.flush()
     return redirect('home')
 
-# ================================
-# TEMPORARY SUPERUSER CREATION
-# ================================
-import os
-
-if os.environ.get("RENDER") == "true":
-    try:
-        from django.contrib.auth import get_user_model
-        User = get_user_model()
-
-        if not User.objects.filter(username="admin").exists():
-            User.objects.create_superuser(
-                username="admin",
-                email="admin@pristineveggies.com",
-                password="Admin@123"
-            )
-            print("✅ Superuser created: admin / Admin@123")
-        else:
-            print("ℹ️ Superuser already exists")
-
-    except Exception as e:
-        print("❌ Superuser creation failed:", e)
