@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Payments | Pristine Veggies</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            margin: 30px auto;
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c7be5;
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .status-success {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-pending {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 15px;
+            padding: 8px 15px;
+            background-color: #555;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+
+        .back-btn:hover {
+            background-color: #333;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <a href="{% url 'admin_dashboard' %}" class="back-btn">⬅ Back to Dashboard</a>
+
+    <h2>Payment Records</h2>
+
+    {% if payments %}
+    <table>
+        <tr>
+            <th>Payment ID</th>
+            <th>Order ID</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Invoice No</th>
+        </tr>
+
+        {% for payment in payments %}
+        <tr>
+            <td>{{ payment.p_id }}</td>
+            <td>{{ payment.ord_id.ord_id }}</td>
+            <td>₹ {{ payment.p_amount }}</td>
+            <td>{{ payment.p_method }}</td>
+            <td class="{% if payment.p_status == 'SUCCESS' %}status-success{% else %}status-pending{% endif %}">
+                {{ payment.p_status }}
+            </td>
+            <td>{{ payment.p_invoice_no|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p style="text-align:center;">No payment records found.</p>
+    {% endif %}
+
+</div>
+
+</body>
+</html>

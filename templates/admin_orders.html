@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Orders</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: top;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        ul {
+            padding-left: 18px;
+            margin: 0;
+        }
+
+        ul li {
+            margin-bottom: 6px;
+        }
+
+        button {
+            background: #c62828;
+            color: #ffffff;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.25s ease;
+        }
+
+        button:hover {
+            background: #8e0000;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.25);
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>All Orders (Admin)</h2>
+
+{% if orders %}
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Customer</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Items</th>
+        <th>Delete</th>
+    </tr>
+
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.ord_id }}</td>
+        <td>{{ order.ord_date }}</td>
+        <td>{{ order.c_id.c_fullname }}</td>
+        <td>₹{{ order.ord_total_amount }}</td>
+
+        <!-- ORDER STATUS -->
+        <td>
+            {% if order.display_status == 'Accepted' %}
+                <span style="color:green;"><b>Accepted</b></span>
+            {% elif order.display_status == 'Rejected' %}
+                <span style="color:red;"><b>Rejected</b></span>
+            {% elif order.display_status == 'Partially Accepted' %}
+                <span style="color:orange;"><b>Partially Accepted</b></span>
+            {% elif order.display_status == 'Partially Rejected' %}
+                <span style="color:darkred;"><b>Partially Rejected</b></span>
+            {% else %}
+                <span style="color:gray;"><b>Pending</b></span>
+            {% endif %}
+        </td>
+
+        <!-- ORDER ITEMS -->
+        <td>
+            <ul>
+                {% for item in order.orderitem_set.all %}
+                    <li>
+                        {{ item.pr_id.pr_name }}
+                        (Farmer: {{ item.pr_id.f_id.f_fullname }})
+                        — <b>{{ item.item_status }}</b>
+                    </li>
+                {% endfor %}
+            </ul>
+        </td>
+
+        <!-- DELETE BUTTON -->
+        <td style="text-align:center;">
+            <form method="post"
+                  action="{% url 'admin_delete_order' order.ord_id %}"
+                  onsubmit="return confirm('Are you sure you want to delete this order?');">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p style="text-align:center;">No orders found.</p>
+{% endif %}
+
+<div class="back">
+    <a href="{% url 'admin_dashboard' %}">← Back to Admin Dashboard</a>
+</div>
+
+</div>
+
+</body>
+</html>

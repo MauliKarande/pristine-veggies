@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard | Pristine Veggies</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #e8f5e9, #f5f5f5);
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 70px auto;
+            background: #ffffff;
+            padding: 40px 30px;
+            text-align: center;
+            border-radius: 10px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            color: #2e7d32;
+        }
+
+        h3 {
+            margin-bottom: 35px;
+            color: #555;
+            font-weight: normal;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 26px;
+            margin: 12px;
+            background-color: #2e7d32;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            min-width: 160px;
+            transition: all 0.25s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+
+        .btn:hover {
+            background-color: #1b5e20;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+        }
+
+        .logout {
+            background-color: #c62828;
+        }
+
+        .logout:hover {
+            background-color: #8e0000;
+            transform: translateY(-4px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+    <h2>Admin Dashboard</h2>
+    <h3>Welcome, {{ admin_name }}</h3>
+
+    <a href="{% url 'admin_orders' %}" class="btn">Orders</a>
+
+    <a href="{% url 'admin_products' %}" class="btn">Products</a>
+
+    <a href="{% url 'admin_customers' %}" class="btn">Customers</a>
+
+    <a href="{% url 'admin_farmers' %}" class="btn">Farmers</a>
+
+    <!-- ✅ NEW PAYMENTS BUTTON -->
+    <a href="/adminpanel/payments/" class="btn">Payments</a>
+
+    <a href="{% url 'admin_register' %}" class="btn">
+        ➕ Register Admin
+    </a>
+
+    <br><br>
+
+    <a href="{% url 'logout' %}" class="btn logout">Logout</a>
+
+</div>
+
+</body>
+</html>

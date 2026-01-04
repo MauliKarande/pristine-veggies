@@ -1,0 +1,189 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order History</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.25);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h2 {
+            text-align: center;
+            color: #27ae60;
+            margin-bottom: 30px;
+        }
+
+        .order-card {
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .order-header p {
+            margin: 4px 0;
+        }
+
+        .customer-box {
+            background: #f7fff9;
+            padding: 12px;
+            border-radius: 10px;
+            margin-top: 10px;
+        }
+
+        .items {
+            margin-top: 15px;
+        }
+
+        .items ul {
+            padding-left: 20px;
+        }
+
+        .items li {
+            margin-bottom: 12px;
+        }
+
+        .status {
+            font-weight: bold;
+            margin-top: 4px;
+        }
+
+        .accepted {
+            color: green;
+        }
+
+        .rejected {
+            color: red;
+        }
+
+        .pending {
+            color: orange;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        .back a {
+            color: #27ae60;
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .back a:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <h2>📜 Order History</h2>
+
+    {% if orders %}
+        {% for order in orders %}
+            <div class="order-card">
+
+                <div class="order-header">
+                    <div>
+                        <p><strong>Order ID:</strong> {{ order.ord_id }}</p>
+                        <p><strong>Date:</strong> {{ order.ord_date }}</p>
+                    </div>
+                    <div>
+                        <p><strong>Total Amount:</strong> ₹{{ order.ord_total_amount }}</p>
+                    </div>
+                </div>
+
+                <div class="customer-box">
+                    <p><strong>Customer:</strong> {{ order.c_id.c_fullname }}</p>
+                    <p><strong>Phone:</strong> {{ order.c_id.c_phone }}</p>
+                    <p><strong>Address:</strong> {{ order.c_id.c_address }}</p>
+                </div>
+
+                <div class="items">
+                    <h4>🧺 Items (Your Products)</h4>
+                    <ul>
+                        {% for item in order.orderitem_set.all %}
+                            {% if item.pr_id.f_id.f_id == request.session.farmer_id %}
+                                <li>
+                                    {{ item.pr_id.pr_name }} –
+                                    {{ item.item_quantity }} Kg × ₹{{ item.item_price }}
+                                    <br>
+                                    <span class="status">
+                                        Status:
+                                        {% if item.item_status == 'ACCEPTED' %}
+                                            <span class="accepted">Accepted ✅</span>
+                                        {% elif item.item_status == 'REJECTED' %}
+                                            <span class="rejected">Rejected ❌</span>
+                                        {% else %}
+                                            <span class="pending">Pending ⏳</span>
+                                        {% endif %}
+                                    </span>
+                                </li>
+                            {% endif %}
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="empty">No past orders.</p>
+    {% endif %}
+
+    <div class="back">
+        <a href="{% url 'farmer_dashboard' %}">← Back to Dashboard</a>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Orders</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>My Orders</h2>
+
+{% if orders %}
+<table>
+    <tr>
+        <th>Order ID</th>
+        <th>Date</th>
+        <th>Total Amount</th>
+        <th>Status</th>
+        <th>View</th>
+    </tr>
+
+    {% for order in orders %}
+    <tr>
+        <td>{{ order.ord_id }}</td>
+        <td>{{ order.ord_date }}</td>
+        <td>₹{{ order.ord_total_amount }}</td>
+
+        <!-- ✅ CORRECT STATUS DISPLAY (ITEM-LEVEL DERIVED) -->
+        <td>
+            {% if order.display_status == 'Accepted' %}
+                <span style="color:green; font-weight:bold;">
+                    Accepted ✅
+                </span>
+
+            {% elif order.display_status == 'Rejected' %}
+                <span style="color:red; font-weight:bold;">
+                    Rejected ❌
+                </span>
+
+            {% elif order.display_status == 'Partially Accepted' %}
+                <span style="color:orange; font-weight:bold;">
+                    Partially Accepted ⚠️
+                </span>
+
+            {% elif order.display_status == 'Partially Rejected' %}
+                <span style="color:darkred; font-weight:bold;">
+                    Partially Rejected ⚠️
+                </span>
+
+            {% else %}
+                <span style="color:gray; font-weight:bold;">
+                    Pending ⏳
+                </span>
+            {% endif %}
+        </td>
+
+        <td>
+            <a href="{% url 'order_details' order.ord_id %}">Details</a>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p class="empty">No orders found.</p>
+{% endif %}
+
+<div class="back">
+    <a href="{% url 'home' %}">← Back to Home</a>
+</div>
+
+</div>
+
+</body>
+</html>

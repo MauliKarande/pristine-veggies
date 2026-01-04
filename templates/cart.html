@@ -1,0 +1,190 @@
+{% load cart_extras %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Cart</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            vertical-align: middle;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        input[type="number"] {
+            padding: 6px;
+            width: 70px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            background-color: #2e7d32;
+            color: #ffffff;
+            transition: all 0.2s ease;
+        }
+
+        button:hover {
+            background-color: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+        }
+
+        .qty-actions a {
+            text-decoration: none;
+            font-size: 18px;
+            margin: 0 6px;
+            font-weight: bold;
+            color: #2e7d32;
+        }
+
+        .qty-actions a:hover {
+            color: #1b5e20;
+        }
+
+        .total {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+        }
+
+        .place-order {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .empty {
+            text-align: center;
+            font-size: 16px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>My Cart</h2>
+
+{% if order %}
+<table>
+    <tr>
+        <th>Product</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Actions</th>
+        <th>Subtotal</th>
+    </tr>
+
+    {% for item in items %}
+    <tr>
+        <td>{{ item.pr_id.pr_name }}</td>
+        <td>₹{{ item.item_price }}</td>
+
+        <td>
+            <form method="post" action="{% url 'update_quantity' item.item_id %}">
+                {% csrf_token %}
+                <input type="number" name="quantity"
+                       value="{{ item.item_quantity }}"
+                       min="1">
+                <button type="submit">Update</button>
+            </form>
+        </td>
+
+        <td class="qty-actions">
+            <a href="{% url 'increase_quantity' item.item_id %}">➕</a>
+            |
+            <a href="{% url 'decrease_quantity' item.item_id %}">➖</a>
+        </td>
+
+        <td>₹{{ item.item_quantity|multiply:item.item_price }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<p class="total">
+    <strong>Total Amount:</strong> ₹{{ order.ord_total_amount }}
+</p>
+
+<div class="place-order">
+    <form method="post" action="{% url 'place_order' %}">
+        {% csrf_token %}
+        <button type="submit">Place Order</button>
+    </form>
+</div>
+
+{% else %}
+<p class="empty">Your cart is empty.</p>
+{% endif %}
+
+<div class="back">
+    <a href="{% url 'home' %}">← Continue Shopping</a>
+</div>
+
+</div>
+
+</body>
+</html>

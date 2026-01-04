@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Profile</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 50px auto;
+            background: #ffffff;
+            padding: 30px 35px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2e7d32;
+        }
+
+        .profile-img {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .profile-img img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #2e7d32;
+        }
+
+        .no-img {
+            text-align: center;
+            color: #777;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="file"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #2e7d32;
+            box-shadow: 0 0 4px rgba(46,125,50,0.4);
+        }
+
+        .btn {
+            margin-top: 15px;
+            padding: 12px 20px;
+            background-color: #2e7d32;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .btn:hover {
+            background-color: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+        }
+
+        hr {
+            margin: 30px 0;
+            border: none;
+            border-top: 1px solid #ddd;
+        }
+
+        .delete-btn {
+            background-color: #c62828;
+        }
+
+        .delete-btn:hover {
+            background-color: #8e0000;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>My Profile</h2>
+
+{% if customer.profile_image %}
+    <div class="profile-img">
+        <img src="{{ customer.profile_image.url }}">
+    </div>
+{% else %}
+    <p class="no-img">No profile image</p>
+{% endif %}
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+
+    <p>
+        <label>Full Name</label><br>
+        <input type="text" name="fullname" value="{{ customer.c_fullname }}">
+    </p>
+
+    <p>
+        <label>Email</label><br>
+        <input type="email" name="email" value="{{ customer.c_email }}">
+    </p>
+
+    <p>
+        <label>Phone</label><br>
+        <input type="text" name="phone" value="{{ customer.c_phone }}">
+    </p>
+
+    <p>
+        <label>Gender</label><br>
+        <select name="gender">
+            <option {% if customer.c_gender == 'Male' %}selected{% endif %}>Male</option>
+            <option {% if customer.c_gender == 'Female' %}selected{% endif %}>Female</option>
+        </select>
+    </p>
+
+    <p>
+        <label>Address</label><br>
+        <textarea name="address">{{ customer.c_address }}</textarea>
+    </p>
+
+    <p>
+        <label>Profile Image</label><br>
+        <input type="file" name="profile_image">
+    </p>
+
+    <button type="submit" class="btn">Update Profile</button>
+</form>
+
+<hr>
+
+<form method="post"
+      action="{% url 'delete_customer_profile' %}"
+      onsubmit="return confirm('Are you sure? This will permanently delete your account.');">
+    {% csrf_token %}
+    <button type="submit" class="btn delete-btn">
+        Delete Profile
+    </button>
+</form>
+
+<div class="links">
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+</div>
+
+</body>
+</html>

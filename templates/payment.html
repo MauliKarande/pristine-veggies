@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment | Pristine Veggies</title>
+    {% load static %}
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+
+        .container {
+            width: 420px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .info {
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+
+        .payment-option {
+            margin: 10px 0;
+        }
+
+        .upi-box {
+            display: none;
+            text-align: center;
+            margin-top: 15px;
+        }
+
+        .upi-box img {
+            width: 200px;
+            border: 1px solid #ccc;
+            padding: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 10px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 20px;
+            background-color: green;
+            color: white;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: darkgreen;
+        }
+    </style>
+
+    <script>
+        function toggleUPI(show) {
+            document.getElementById("upiBox").style.display = show ? "block" : "none";
+        }
+    </script>
+</head>
+
+<body>
+
+<div class="container">
+    <h2>Payment</h2>
+
+    <div class="info">
+        <strong>Order ID:</strong> {{ order.ord_id }}<br>
+        <strong>Total Amount:</strong> ₹{{ order.ord_total_amount }}
+    </div>
+
+    <form method="post" action="{% url 'orders:confirm_payment' order.ord_id %}">
+        {% csrf_token %}
+
+        <div class="payment-option">
+            <input type="radio" name="payment_method" value="COD"
+                   checked onclick="toggleUPI(false)">
+            Cash on Delivery
+        </div>
+
+        <div class="payment-option">
+            <input type="radio" name="payment_method" value="UPI"
+                   onclick="toggleUPI(true)">
+            UPI (Demo)
+        </div>
+
+        <div class="upi-box" id="upiBox">
+            <p>Scan UPI QR to Pay</p>
+            <img src="{% static 'images/upi_qr.png' %}" alt="UPI QR">
+
+            <input type="text" name="transaction_id"
+                   placeholder="Transaction ID (optional)">
+        </div>
+
+        <button type="submit">Confirm Payment</button>
+    </form>
+</div>
+
+</body>
+</html>

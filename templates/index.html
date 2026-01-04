@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pristine Veggies</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ===== TOP BAR ===== */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 25px;
+            background: #ffffff;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+
+        .nav-links img {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* ===== HERO ===== */
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+            .hero {
+    background: url("your-image.png") center/cover no-repeat;
+}
+
+            background: linear-gradient(to right, #27ae60, #2ecc71);
+            color: white;
+        }
+
+        .hero h1 {
+            font-size: 40px;
+            margin-bottom: 10px;
+        }
+
+        .hero p {
+            font-size: 18px;
+        }
+
+        .login-btn {
+            padding: 12px 30px;
+            font-size: 16px;
+            background: #ffffff;
+            color: #27ae60;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* ===== REGISTER CARDS ===== */
+        .register-box {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .register-card {
+            background: white;
+            width: 260px;
+            padding: 25px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .register-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+        }
+
+        .register-card h3 {
+            color: #27ae60;
+        }
+
+        /* ===== PRODUCTS ===== */
+        .products {
+    width: 85%;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+}
+.product-card {
+    background: white;
+    padding: 18px;
+    border-radius: 12px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+
+    width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
+}
+
+
+     
+
+
+.product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+}
+.product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 8px;
+    margin-bottom: 12px;
+}
+.product-card h3 {
+    margin: 6px 0;
+    color: #2c3e50;
+}
+
+.product-card p {
+    font-size: 14px;
+    margin: 4px 0;
+}
+.product-card form {
+    margin-top: auto;
+}
+
+.product-card button {
+    margin-top: 10px;
+    width: 100%;
+    padding: 10px;
+    background: #27ae60;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.product-card button:hover {
+    background: #219150;
+}
+
+    </style>
+</head>
+
+<body>
+
+{% if customer_name %}
+<!-- ===== TOP BAR (LOGGED IN) ===== -->
+<div class="top-bar">
+    <div class="nav-links">
+        <strong>Welcome, {{ customer_name }}</strong>
+
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/icons/homeicon.png' %}"> Home
+        </a>
+
+        <a href="{% url 'view_cart' %}" class="cart-link">
+    <img src="{% static 'images/icons/carticon.jpg' %}">
+    <span id="cartBadge" class="cart-badge">0</span>
+    Cart
+</a>
+
+        <a href="{% url 'my_orders' %}">
+            <img src="{% static 'images/icons/ordersicon.png' %}"> Orders
+        </a>
+
+        <a href="{% url 'customer_profile' %}">
+            <img src="{% static 'images/icons/profileicon.png' %}"> Profile
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <img src="{% static 'images/icons/logouticon.png' %}"> Logout
+        </a>
+    </div>
+
+    <div>
+        {% if customer and customer.profile_image %}
+            <img src="{{ customer.profile_image.url }}"
+                 width="60" height="60"
+                 style="border-radius:50%; object-fit:cover;">
+        {% else %}
+            <img src="{% static 'images/default_user.png' %}"
+                 width="55" height="55"
+                 style="border-radius:50%;">
+        {% endif %}
+    </div>
+</div>
+{% endif %}
+
+<!-- ===== HERO ===== -->
+<div class="hero">
+    <h1>Pristine Veggies 🌱</h1>
+    <p>Fresh vegetables directly from farmers</p>
+
+    {% if not customer_name %}
+        <br>
+        <a href="{% url 'login' %}">
+            <button class="login-btn">Login</button>
+        </a>
+
+        <div class="register-box">
+            <a href="{% url 'customer_register' %}" style="text-decoration:none;">
+                <div class="register-card">
+                    <h3>Register as Customer</h3>
+                    <p>Buy fresh vegetables directly from farmers</p>
+                </div>
+            </a>
+
+            <a href="{% url 'farmer_register' %}" style="text-decoration:none;">
+                <div class="register-card">
+                    <h3>Register as Farmer</h3>
+                    <p>Sell your farm produce to customers</p>
+                </div>
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+<div id="cartMessage" class="cart-message"></div>
+
+
+<!-- 🔍 SEARCH BAR -->
+<div style="width:80%; margin:30px auto; text-align:center;">
+    <form method="get">
+        <input type="text"
+               name="q"
+               value="{{ query|default:'' }}"
+               placeholder="Search by product, category or farmer..."
+               style="width:60%;
+                      padding:12px;
+                      border-radius:30px;
+                      border:1px solid #ccc;
+                      font-size:16px;">
+
+        <button type="submit"
+                style="padding:12px 25px;
+                       border-radius:30px;
+                       border:none;
+                       background:#27ae60;
+                       color:white;
+                       font-size:16px;
+                       cursor:pointer;">
+            🔍 Search
+        </button>
+    </form>
+</div>
+
+
+<!-- ===== PRODUCTS ===== -->
+<div class="products">
+{% for product in products %}
+    <div class="product-card">
+        <div>
+            {% if product.pr_image %}
+                <img src="{{ product.pr_image.url }}" width="150" height="150" style="object-fit:cover;">
+            {% else %}
+                <img src="{% static 'images/no_product.png' %}" width="150" height="150">
+            {% endif %}
+        </div>
+
+        <div>
+            <h3>{{ product.pr_name }}</h3>
+            <p><b>Farmer:</b> {{ product.f_id.f_fullname }}</p>
+            <p><b>Price:</b> ₹{{ product.pr_price_per_kg }}/kg</p>
+            <p><b>Stock:</b> {{ product.pr_stock_qty }} Kg</p>
+            <p>{{ product.pr_description }}</p>
+
+            {% if customer_name %}
+<form method="post"
+      action="/orders/add/{{ product.pr_id }}/"
+      target="cartFrame"
+      onsubmit="showCartMessage('{{ product.pr_name }}', this)">
+    {% csrf_token %}
+    <input type="number" name="quantity" value="1" min="1">
+    <button type="submit">Add to Cart</button>
+</form>
+{% else %}
+    <p style="color:red;">Login to order</p>
+{% endif %}
+
+        </div>
+    </div>
+{% empty %}
+    <p style="text-align:center;">No products available.</p>
+{% endfor %}
+</div>
+
+
+
+<style>
+    /* ===== CART NOTIFICATION BADGE ===== */
+    .cart-link {
+        position: relative;
+    }
+
+    .cart-badge {
+        position: absolute;
+        top: -6px;
+        right: -8px;
+        background: red;
+        color: white;
+        font-size: 11px;
+        padding: 2px 6px;
+        border-radius: 50%;
+        display: none;
+    }
+
+    /* ===== ADD TO CART MESSAGE ===== */
+    .cart-message {
+        position: fixed;
+        top: 90px;
+        right: 20px;
+        background: #e8f5e9;
+        color: #2e7d32;
+        padding: 12px 18px;
+        border-radius: 6px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        font-weight: bold;
+        display: none;
+        z-index: 999;
+    }
+</style>
+<script>
+    // Load cart count from browser memory
+    let cartCount = sessionStorage.getItem("cartCount")
+        ? parseInt(sessionStorage.getItem("cartCount"))
+        : 0;
+
+    // On page load, show badge if count exists
+    window.onload = function () {
+        const badge = document.getElementById("cartBadge");
+        if (badge && cartCount > 0) {
+            badge.innerText = cartCount;
+            badge.style.display = "inline-block";
+        }
+    };
+
+    function showCartMessage(productName, form) {
+        const qty = form.quantity.value;
+
+        // ===== SHOW MESSAGE =====
+        const msgBox = document.getElementById("cartMessage");
+        msgBox.innerText = `Item "${productName}" with ${qty} quantity added to cart`;
+        msgBox.style.display = "block";
+
+        // Keep message for FULL 2 seconds
+        setTimeout(() => {
+            msgBox.style.display = "none";
+        }, 2000);
+
+        // ===== UPDATE CART BADGE =====
+        cartCount++;
+        sessionStorage.setItem("cartCount", cartCount);
+
+        const badge = document.getElementById("cartBadge");
+        badge.innerText = cartCount;
+        badge.style.display = "inline-block";
+    }
+
+    // Clear badge when cart is clicked
+    function clearCartBadge() {
+        sessionStorage.removeItem("cartCount");
+    }
+</script>
+
+<iframe name="cartFrame" style="display:none;"></iframe>
+
+</body>
+</html>
+
+
+

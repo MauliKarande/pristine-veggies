@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin - Farmers</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 60px auto;
+            background: #ffffff;
+            padding: 25px 30px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #2e7d32;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+
+        .message {
+            color: green;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        table th {
+            background-color: #343a40;
+            color: #ffffff;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        table tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        button {
+            border-radius: 4px;
+        }
+
+        .actions a {
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>All Farmers</h2>
+
+<a href="{% url 'admin_dashboard' %}" class="back-link">← Back to Dashboard</a>
+<br><br>
+
+{% if messages %}
+    {% for message in messages %}
+        <p class="message">{{ message }}</p>
+    {% endfor %}
+{% endif %}
+
+<table>
+    <tr>
+        <th>ID</th>
+        <th>Full Name</th>
+        <th>Login Name</th>
+        <th>Email</th>
+        <th>Phone</th>
+        <th>Action</th>
+    </tr>
+
+    {% for f in farmers %}
+    <tr>
+        <td>{{ f.f_id }}</td>
+        <td>{{ f.f_fullname }}</td>
+        <td>{{ f.f_login_name }}</td>
+        <td>{{ f.f_email }}</td>
+        <td>{{ f.f_phone }}</td>
+        <td class="actions">
+            <a href="{% url 'admin_edit_farmer' f.f_id %}">Edit</a>
+
+            <form method="post"
+                  action="{% url 'admin_delete_farmer' f.f_id %}"
+                  style="display:inline;"
+                  onsubmit="return confirm('Delete this farmer?');">
+                {% csrf_token %}
+                <button type="submit"
+                        style="background:red; color:white; border:none; padding:4px 8px; cursor:pointer;">
+                    Delete
+                </button>
+            </form>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="6" style="text-align:center;">No farmers found.</td>
+    </tr>
+    {% endfor %}
+</table>
+
+</div>
+
+</body>
+</html>

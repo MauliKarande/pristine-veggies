@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Order Placed</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background-color: #f4f6f8;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 80px auto;
+            background: #ffffff;
+            padding: 40px 30px;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            text-align: center;
+        }
+
+        h2 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        .order-id {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .amount {
+            font-size: 16px;
+            margin-bottom: 25px;
+        }
+
+        a {
+            display: inline-block;
+            padding: 12px 22px;
+            background-color: #2e7d32;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+            transition: all 0.25s ease;
+        }
+
+        a:hover {
+            background-color: #1b5e20;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+
+<h2>🎉 Order Placed Successfully!</h2>
+
+<p class="order-id">
+    Your order ID is <strong>{{ order.ord_id }}</strong>
+</p>
+
+<p class="amount">
+    Total Amount: ₹{{ order.ord_total_amount }}
+</p>
+
+<a href="{% url 'home' %}">Go back to Home</a>
+
+</div>
+
+</body>
+</html>
