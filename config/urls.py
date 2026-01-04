@@ -76,8 +76,7 @@ urlpatterns = [
     path('place-order/', order_views.place_order, name='place_order'),
     path('my-orders/', order_views.my_orders, name='my_orders'),
     path('orders/details/<int:order_id>/', order_views.order_details, name='order_details'),
-    path("create-admin/", create_admin_once),
-
+    
 
     # =====================
     # ORDERS / PAYMENT (APP URLS)
