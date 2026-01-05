@@ -4,6 +4,8 @@ from accounts.models import Customer
 from accounts.models import Customer
 from django.db.models import Q
 from products.models import Product
+from orders.models import Order
+
 
 
 def home(request):
@@ -21,16 +23,29 @@ def home(request):
     customer_name = request.session.get('customer_name')
 
     customer = None
+    cart_count = 0
+
     if request.session.get('customer_id'):
         from accounts.models import Customer
-        customer = Customer.objects.get(c_id=request.session.get('customer_id'))
+        from orders.models import Order
+
+        customer_id = request.session.get('customer_id')
+        customer = Customer.objects.get(c_id=customer_id)
+
+        try:
+            order = Order.objects.get(c_id=customer_id, ord_status='CART')
+            cart_count = order.orderitem_set.count()
+        except Order.DoesNotExist:
+            cart_count = 0
 
     return render(request, 'index.html', {
         'products': products,
         'customer_name': customer_name,
         'customer': customer,
-        'query': query
+        'query': query,
+        'cart_count': cart_count   # ✅ NEW (SAFE)
     })
+
 
 
     

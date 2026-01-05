@@ -23,13 +23,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-rt^*^4&qaxk^got07a4w3=y^^^cx(h1hpqrnlo1f%=iex38em!'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
-ALLOWED_HOSTS =  ['*']
-CSRF_TRUSTED_ORIGINS = [
-    'https://b9aae8290577.ngrok-free.app'
-]
-
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -72,6 +68,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                
             ],
         },
     },
@@ -135,8 +132,12 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-CSRF_TRUSTED_ORIGINS = []
 
 
+# ==============================
+# RAZORPAY CONFIG (TEST MODE)
+# ==============================
+
+RAZORPAY_KEY_ID = "rzp_test_S0FEMrIAksxygN"
+RAZORPAY_KEY_SECRET = "XIc5BQHfa0e2z7LX7uvflJbU"
 

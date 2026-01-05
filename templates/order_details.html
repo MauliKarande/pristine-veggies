@@ -101,9 +101,28 @@
 
 <div class="order-info">
     <p><strong>Order ID:</strong> {{ order.ord_id }}</p>
-    <p><strong>Date:</strong> {{ order.ord_date }}</p>
+
+    <p>
+        <strong>Order Placed:</strong>
+        {{ order.ord_created_at|date:"d M Y" }}
+        at
+        {{ order.ord_created_at|time:"H:i:s" }}
+    </p>
+
+    <p>
+        <strong>Payment Time:</strong>
+        {% if order.ord_payment_at %}
+            {{ order.ord_payment_at|date:"d M Y" }}
+            at
+            {{ order.ord_payment_at|time:"H:i:s" }}
+        {% else %}
+            <span style="color:orange;">Pending</span>
+        {% endif %}
+    </p>
+
     <p><strong>Total Amount:</strong> ₹{{ order.ord_total_amount }}</p>
 </div>
+
 
 <hr>
 
@@ -162,7 +181,7 @@
 </table>
 
 <div class="back">
-    <a href="{% url 'my_orders' %}">← Back to My Orders</a>
+    <a href="{% url 'orders:my_orders' %}">← Back to My Orders</a>
 </div>
 
 </div>

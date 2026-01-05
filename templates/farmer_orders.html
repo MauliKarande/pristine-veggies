@@ -21,18 +21,6 @@
             padding: 30px;
             border-radius: 14px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.25);
-            animation: fadeIn 0.6s ease;
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         h2 {
@@ -46,22 +34,6 @@
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-
-        .order-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
-        }
-
-        .order-header {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-
-        .order-header p {
-            margin: 4px 0;
         }
 
         .customer-box {
@@ -71,34 +43,20 @@
             margin-top: 10px;
         }
 
-        .items {
-            margin-top: 15px;
-        }
-
         .items ul {
             padding-left: 20px;
         }
 
         .items li {
-            margin-bottom: 6px;
-        }
-
-        .status {
-            margin-top: 10px;
-            font-weight: bold;
-        }
-
-        .actions {
-            margin-top: 15px;
+            margin-bottom: 12px;
         }
 
         .btn {
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             border: none;
             font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s, background 0.3s;
         }
 
         .btn-accept {
@@ -106,52 +64,25 @@
             color: white;
         }
 
-        .btn-accept:hover {
-            background: #219150;
-            transform: translateY(-1px);
-        }
-
         .btn-reject {
             background: #e74c3c;
             color: white;
+            margin-left: 8px;
+        }
+
+        .status {
+            font-weight: bold;
             margin-left: 10px;
         }
 
-        .btn-reject:hover {
-            background: #c0392b;
-            transform: translateY(-1px);
-        }
-
-        .details-link {
-            display: inline-block;
+        .payment {
             margin-top: 8px;
-            text-decoration: none;
-            color: #27ae60;
-            font-weight: bold;
-        }
-
-        .details-link:hover {
-            text-decoration: underline;
+            font-size: 14px;
         }
 
         .back {
             text-align: center;
             margin-top: 25px;
-        }
-
-        .back a {
-            color: #27ae60;
-            font-weight: bold;
-            text-decoration: none;
-        }
-
-        .back a:hover {
-            text-decoration: underline;
-        }
-
-        .empty {
-            text-align: center;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -166,14 +97,23 @@
         {% for order in orders %}
             <div class="order-card">
 
-                <div class="order-header">
-                    <div>
-                        <p><strong>Order ID:</strong> {{ order.ord_id }}</p>
-                        <p><strong>Date:</strong> {{ order.ord_date }}</p>
-                    </div>
-                    <div>
-                        <p><strong>Total:</strong> ₹{{ order.ord_total_amount }}</p>
-                    </div>
+                <p><strong>Order ID:</strong> {{ order.ord_id }}</p>
+                <p><strong>Total:</strong> ₹{{ order.ord_total_amount }}</p>
+
+                <!-- ✅ PAYMENT STATUS -->
+                <div class="payment">
+                    <strong>Payment Status:</strong>
+                    {% if order.ord_status == 'PAID' %}
+                        <span style="color:green; font-weight:bold;">Paid ✅</span><br>
+                        <small style="color:#555;">
+                            Date:
+                            {{ order.ord_payment_at|date:"d M Y" }} <br>
+                            Time:
+                            {{ order.ord_payment_at|time:"H:i:s" }}
+                        </small>
+                    {% else %}
+                        <span style="color:orange; font-weight:bold;">Pending ⏳</span>
+                    {% endif %}
                 </div>
 
                 <div class="customer-box">
@@ -190,38 +130,45 @@
                                 <li>
                                     {{ item.pr_id.pr_name }} –
                                     {{ item.item_quantity }} Kg × ₹{{ item.item_price }}
+
+                                    <!-- ITEM STATUS -->
+                                    <p class="status">
+                                        <strong>Status:</strong>
+                                        {% if item.item_status == 'PLACED' %}
+                                            Pending ⏳
+                                        {% elif item.item_status == 'ACCEPTED' %}
+                                            Accepted ✅
+                                        {% elif item.item_status == 'REJECTED' %}
+                                            Rejected ❌
+                                        {% endif %}
+                                    </p>
+
+                                    <!-- ACTIONS -->
+                                    {% if item.item_status == 'PLACED' %}
+                                        <form method="post"
+                                              action="{% url 'orders:accept_order' order.ord_id %}"
+                                              style="display:inline;">
+                                            {% csrf_token %}
+                                            <button class="btn btn-accept">Accept</button>
+                                        </form>
+
+                                        <form method="post"
+                                              action="{% url 'orders:reject_order' order.ord_id %}"
+                                              style="display:inline;">
+                                            {% csrf_token %}
+                                            <button class="btn btn-reject">Reject</button>
+                                        </form>
+                                    {% endif %}
                                 </li>
                             {% endif %}
                         {% endfor %}
                     </ul>
                 </div>
 
-                <p class="status">
-                    <strong>Status:</strong> {{ order.ord_status }}
-                </p>
-
-                <a href="{% url 'order_details' order.ord_id %}" class="details-link">
-                    View Details →
-                </a>
-
-                {% if order.ord_status == 'PLACED' %}
-                    <div class="actions">
-                        <form method="post" action="{% url 'orders:accept_order' order.ord_id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-accept">Accept</button>
-                        </form>
-
-                        <form method="post" action="{% url 'orders:reject_order' order.ord_id %}" style="display:inline;">
-                            {% csrf_token %}
-                            <button type="submit" class="btn btn-reject">Reject</button>
-                        </form>
-                    </div>
-                {% endif %}
-
             </div>
         {% endfor %}
     {% else %}
-        <p class="empty">No incoming orders.</p>
+        <p style="text-align:center;">No incoming orders.</p>
     {% endif %}
 
     <div class="back">

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -13,6 +13,17 @@
             background: #f4f7f6;
             margin: 0;
             padding: 0;
+        }
+
+        /* ===== STICKY HEADER WRAPPER ===== */
+        .header-fixed-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: #f4f7f6; /* Matches body background */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
         }
 
         /* ===== TOP BAR ===== */
@@ -48,27 +59,25 @@
         /* ===== HERO ===== */
         .hero {
             text-align: center;
-            padding: 50px 20px;
-            .hero {
-    background: url("your-image.png") center/cover no-repeat;
-}
-
+            padding: 15px 20px;
             background: linear-gradient(to right, #27ae60, #2ecc71);
             color: white;
         }
 
         .hero h1 {
-            font-size: 40px;
-            margin-bottom: 10px;
+            font-size: 32px; /* Adjusted size for sticky layout */
+            margin-top: 5px;
+            margin-bottom: 5px;
         }
 
         .hero p {
-            font-size: 18px;
+            font-size: 16px;
+            margin-bottom: 10px;
         }
 
         .login-btn {
-            padding: 12px 30px;
-            font-size: 16px;
+            padding: 10px 25px;
+            font-size: 14px;
             background: #ffffff;
             color: #27ae60;
             border: none;
@@ -81,323 +90,323 @@
         .register-box {
             display: flex;
             justify-content: center;
-            gap: 30px;
-            margin-top: 30px;
+            gap: 20px;
+            margin-top: 15px;
         }
 
         .register-card {
             background: white;
-            width: 260px;
-            padding: 25px;
+            width: 220px;
+            padding: 15px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .register-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
         }
 
         .register-card h3 {
             color: #27ae60;
+            font-size: 16px;
+            margin: 5px 0;
+        }
+        
+        .register-card p {
+            font-size: 12px;
+            color: #666;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-container {
+            background: #ffffff;
+            padding: 15px 0;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        /* ===== SCROLLABLE CONTENT AREA ===== */
+        .main-content {
+            /* This margin-top must be large enough to clear the fixed header. 
+               We calculate it based on the header's height. */
+            margin-top: 420px; 
+            padding-bottom: 50px;
+        }
+        
+        /* Adjust margin-top if the hero section is smaller (when logged in) */
+        .logged-in-margin {
+            margin-top: 250px;
         }
 
         /* ===== PRODUCTS ===== */
         .products {
-    width: 85%;
-    margin: 40px auto;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 25px;
-}
-.product-card {
-    background: white;
-    padding: 18px;
-    border-radius: 12px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    transition: transform 0.3s, box-shadow 0.3s;
+            width: 85%;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 25px;
+        }
 
-    width: 100%;
-    min-width: 0;
-    box-sizing: border-box;
-}
+        .product-card {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+            width: 100%;
+            min-width: 0;
+            box-sizing: border-box;
+        }
 
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.25);
+        }
 
-     
+        .product-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+        }
 
+        .product-card h3 {
+            margin: 6px 0;
+            color: #2c3e50;
+        }
 
-.product-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 12px 25px rgba(0,0,0,0.25);
-}
-.product-card img {
-    width: 100%;
-    height: 180px;
-    object-fit: cover;
-    border-radius: 8px;
-    margin-bottom: 12px;
-}
-.product-card h3 {
-    margin: 6px 0;
-    color: #2c3e50;
-}
+        .product-card p {
+            font-size: 14px;
+            margin: 4px 0;
+        }
 
-.product-card p {
-    font-size: 14px;
-    margin: 4px 0;
-}
-.product-card form {
-    margin-top: auto;
-}
+        .product-card button {
+            margin-top: 10px;
+            width: 100%;
+            padding: 10px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: bold;
+        }
 
-.product-card button {
-    margin-top: 10px;
-    width: 100%;
-    padding: 10px;
-    background: #27ae60;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-}
+        .product-card button:hover {
+            background: #219150;
+        }
 
-.product-card button:hover {
-    background: #219150;
-}
+        /* ===== CART NOTIFICATION BADGE ===== */
+        .cart-link {
+            position: relative;
+        }
 
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: red;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 50%;
+            display: none;
+        }
+
+        /* ===== ADD TO CART MESSAGE ===== */
+        .cart-message {
+            position: absolute;
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 12px 18px;
+            border-radius: 6px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+            display: none;
+            z-index: 9999;
+        }
     </style>
 </head>
 
 <body>
 
-{% if customer_name %}
-<!-- ===== TOP BAR (LOGGED IN) ===== -->
-<div class="top-bar">
-    <div class="nav-links">
-        <strong>Welcome, {{ customer_name }}</strong>
+<div class="header-fixed-container" id="stickyHeader">
+    {% if customer_name %}
+    <div class="top-bar">
+        <div class="nav-links">
+            <strong>Welcome, {{ customer_name }}</strong>
 
-        <a href="{% url 'home' %}">
-            <img src="{% static 'images/icons/homeicon.png' %}"> Home
-        </a>
-
-        <a href="{% url 'view_cart' %}" class="cart-link">
-    <img src="{% static 'images/icons/carticon.jpg' %}">
-    <span id="cartBadge" class="cart-badge">0</span>
-    Cart
-</a>
-
-        <a href="{% url 'my_orders' %}">
-            <img src="{% static 'images/icons/ordersicon.png' %}"> Orders
-        </a>
-
-        <a href="{% url 'customer_profile' %}">
-            <img src="{% static 'images/icons/profileicon.png' %}"> Profile
-        </a>
-
-        <a href="{% url 'logout' %}">
-            <img src="{% static 'images/icons/logouticon.png' %}"> Logout
-        </a>
-    </div>
-
-    <div>
-        {% if customer and customer.profile_image %}
-            <img src="{{ customer.profile_image.url }}"
-                 width="60" height="60"
-                 style="border-radius:50%; object-fit:cover;">
-        {% else %}
-            <img src="{% static 'images/default_user.png' %}"
-                 width="55" height="55"
-                 style="border-radius:50%;">
-        {% endif %}
-    </div>
-</div>
-{% endif %}
-
-<!-- ===== HERO ===== -->
-<div class="hero">
-    <h1>Pristine Veggies 🌱</h1>
-    <p>Fresh vegetables directly from farmers</p>
-
-    {% if not customer_name %}
-        <br>
-        <a href="{% url 'login' %}">
-            <button class="login-btn">Login</button>
-        </a>
-
-        <div class="register-box">
-            <a href="{% url 'customer_register' %}" style="text-decoration:none;">
-                <div class="register-card">
-                    <h3>Register as Customer</h3>
-                    <p>Buy fresh vegetables directly from farmers</p>
-                </div>
+            <a href="{% url 'home' %}">
+                <img src="{% static 'images/icons/homeicon.png' %}"> Home
             </a>
 
-            <a href="{% url 'farmer_register' %}" style="text-decoration:none;">
-                <div class="register-card">
-                    <h3>Register as Farmer</h3>
-                    <p>Sell your farm produce to customers</p>
-                </div>
+            <a href="{% url 'orders:view_cart' %}" class="cart-link">
+                <img src="{% static 'images/icons/carticon.jpg' %}">
+                <span id="cartBadge" class="cart-badge">{{ cart_count }}</span>
+                Cart
+            </a>
+
+            <a href="{% url 'orders:my_orders' %}">
+                <img src="{% static 'images/icons/ordersicon.png' %}"> Orders
+            </a>
+
+            <a href="{% url 'customer_profile' %}">
+                <img src="{% static 'images/icons/profileicon.png' %}"> Profile
+            </a>
+
+            <a href="{% url 'logout' %}">
+                <img src="{% static 'images/icons/logouticon.png' %}"> Logout
             </a>
         </div>
-    {% endif %}
-</div>
 
-<div id="cartMessage" class="cart-message"></div>
-
-
-<!-- 🔍 SEARCH BAR -->
-<div style="width:80%; margin:30px auto; text-align:center;">
-    <form method="get">
-        <input type="text"
-               name="q"
-               value="{{ query|default:'' }}"
-               placeholder="Search by product, category or farmer..."
-               style="width:60%;
-                      padding:12px;
-                      border-radius:30px;
-                      border:1px solid #ccc;
-                      font-size:16px;">
-
-        <button type="submit"
-                style="padding:12px 25px;
-                       border-radius:30px;
-                       border:none;
-                       background:#27ae60;
-                       color:white;
-                       font-size:16px;
-                       cursor:pointer;">
-            🔍 Search
-        </button>
-    </form>
-</div>
-
-
-<!-- ===== PRODUCTS ===== -->
-<div class="products">
-{% for product in products %}
-    <div class="product-card">
         <div>
-            {% if product.pr_image %}
-                <img src="{{ product.pr_image.url }}" width="150" height="150" style="object-fit:cover;">
+            {% if customer and customer.profile_image %}
+                <img src="{{ customer.profile_image.url }}"
+                     width="55" height="55"
+                     style="border-radius:50%; object-fit:cover;">
             {% else %}
-                <img src="{% static 'images/no_product.png' %}" width="150" height="150">
+                <img src="{% static 'images/default_user.png' %}"
+                     width="55" height="55"
+                     style="border-radius:50%;">
             {% endif %}
         </div>
-
-        <div>
-            <h3>{{ product.pr_name }}</h3>
-            <p><b>Farmer:</b> {{ product.f_id.f_fullname }}</p>
-            <p><b>Price:</b> ₹{{ product.pr_price_per_kg }}/kg</p>
-            <p><b>Stock:</b> {{ product.pr_stock_qty }} Kg</p>
-            <p>{{ product.pr_description }}</p>
-
-            {% if customer_name %}
-<form method="post"
-      action="/orders/add/{{ product.pr_id }}/"
-      target="cartFrame"
-      onsubmit="showCartMessage('{{ product.pr_name }}', this)">
-    {% csrf_token %}
-    <input type="number" name="quantity" value="1" min="1">
-    <button type="submit">Add to Cart</button>
-</form>
-{% else %}
-    <p style="color:red;">Login to order</p>
-{% endif %}
-
-        </div>
     </div>
-{% empty %}
-    <p style="text-align:center;">No products available.</p>
-{% endfor %}
+    {% endif %}
+
+    <div class="hero">
+        <h1>Pristine Veggies 🌱</h1>
+        <p>Fresh vegetables directly from farmers</p>
+
+        {% if not customer_name %}
+            <a href="{% url 'login' %}">
+                <button class="login-btn">Login</button>
+            </a>
+
+            <div class="register-box">
+                <a href="{% url 'customer_register' %}" style="text-decoration:none;">
+                    <div class="register-card">
+                        <h3>Register as Customer</h3>
+                        <p>Buy directly from farmers</p>
+                    </div>
+                </a>
+
+                <a href="{% url 'farmer_register' %}" style="text-decoration:none;">
+                    <div class="register-card">
+                        <h3>Register as Farmer</h3>
+                        <p>Sell produce to customers</p>
+                    </div>
+                </a>
+            </div>
+        {% endif %}
+    </div>
+
+    <div class="search-container">
+        <form method="get">
+            <input type="text"
+                   name="q"
+                   value="{{ query|default:'' }}"
+                   placeholder="Search by product, category or farmer..."
+                   style="width:50%; padding:12px; border-radius:30px; border:1px solid #ccc; font-size:16px;">
+
+            <button type="submit"
+                    style="padding:12px 25px; border-radius:30px; border:none; background:#27ae60; color:white; font-size:16px; cursor:pointer;">
+                🔍 Search
+            </button>
+        </form>
+    </div>
 </div>
 
+<div class="main-content {% if customer_name %}logged-in-margin{% endif %}" id="mainContent">
+    <div id="cartMessage" class="cart-message"></div>
 
+    <div class="products">
+    {% for product in products %}
+        <div class="product-card">
+            <div>
+                {% if product.pr_image %}
+                    <img src="{{ product.pr_image.url }}" width="150" height="150" style="object-fit:cover;">
+                {% else %}
+                    <img src="{% static 'images/no_product.png' %}" width="150" height="150">
+                {% endif %}
+            </div>
 
-<style>
-    /* ===== CART NOTIFICATION BADGE ===== */
-    .cart-link {
-        position: relative;
-    }
+            <div>
+                <h3>{{ product.pr_name }}</h3>
+                <p><b>Farmer:</b> {{ product.f_id.f_fullname }}</p>
+                <p><b>Price:</b> ₹{{ product.pr_price_per_kg }}/kg</p>
+                <p><b>Stock:</b> {{ product.pr_stock_qty }} Kg</p>
+                <p>{{ product.pr_description }}</p>
 
-    .cart-badge {
-        position: absolute;
-        top: -6px;
-        right: -8px;
-        background: red;
-        color: white;
-        font-size: 11px;
-        padding: 2px 6px;
-        border-radius: 50%;
-        display: none;
-    }
+                {% if customer_name %}
+                <form method="post"
+                      action="{% url 'orders:add_to_order' product.pr_id %}"
+                      target="cartFrame"
+                      onsubmit="showCartMessage(event, '{{ product.pr_name }}', this)">
+                    {% csrf_token %}
+                    <input type="number" name="quantity" value="1" min="1" style="width: 50px; padding: 5px;">
+                    <button type="submit">Add to Cart</button>
+                </form>
+                {% else %}
+                    <p style="color:red; font-weight:bold; margin-top:10px;">Login to order</p>
+                {% endif %}
+            </div>
+        </div>
+    {% empty %}
+        <div style="grid-column: 1 / -1; text-align: center; padding: 50px;">
+            <p style="font-size: 18px; color: #666;">No products available at the moment.</p>
+        </div>
+    {% endfor %}
+    </div>
+</div>
 
-    /* ===== ADD TO CART MESSAGE ===== */
-    .cart-message {
-        position: fixed;
-        top: 90px;
-        right: 20px;
-        background: #e8f5e9;
-        color: #2e7d32;
-        padding: 12px 18px;
-        border-radius: 6px;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        font-weight: bold;
-        display: none;
-        z-index: 999;
-    }
-</style>
 <script>
-    // Load cart count from browser memory
-    let cartCount = sessionStorage.getItem("cartCount")
-        ? parseInt(sessionStorage.getItem("cartCount"))
-        : 0;
-
-    // On page load, show badge if count exists
-    window.onload = function () {
-        const badge = document.getElementById("cartBadge");
-        if (badge && cartCount > 0) {
-            badge.innerText = cartCount;
-            badge.style.display = "inline-block";
-        }
+    // Adjust scroll margin dynamically based on header height
+    window.onload = function() {
+        const header = document.getElementById('stickyHeader');
+        const content = document.getElementById('mainContent');
+        content.style.marginTop = (header.offsetHeight + 20) + "px";
     };
 
-    function showCartMessage(productName, form) {
-        const qty = form.quantity.value;
+    let cartCount = {{ cart_count|default:0 }};
 
-        // ===== SHOW MESSAGE =====
+    function updateBadge() {
+        const badge = document.getElementById("cartBadge");
+        if (badge) {
+            if (cartCount > 0) {
+                badge.innerText = cartCount;
+                badge.style.display = "inline-block";
+            } else {
+                badge.style.display = "none";
+            }
+        }
+    }
+
+    function showCartMessage(event, productName, form) {
+        const qty = parseInt(form.quantity.value);
+        cartCount += qty;
+        updateBadge();
+
         const msgBox = document.getElementById("cartMessage");
         msgBox.innerText = `Item "${productName}" with ${qty} quantity added to cart`;
+
+        // Position near cursor
+        const x = event.pageX;
+        const y = event.pageY;
+        msgBox.style.left = (x + 10) + "px";
+        msgBox.style.top = (y + 10) + "px";
         msgBox.style.display = "block";
 
-        // Keep message for FULL 2 seconds
         setTimeout(() => {
             msgBox.style.display = "none";
-        }, 2000);
-
-        // ===== UPDATE CART BADGE =====
-        cartCount++;
-        sessionStorage.setItem("cartCount", cartCount);
-
-        const badge = document.getElementById("cartBadge");
-        badge.innerText = cartCount;
-        badge.style.display = "inline-block";
+        }, 1800);
     }
 
-    // Clear badge when cart is clicked
-    function clearCartBadge() {
-        sessionStorage.removeItem("cartCount");
-    }
+    // initial render
+    updateBadge();
 </script>
 
 <iframe name="cartFrame" style="display:none;"></iframe>
 
 </body>
 </html>
-
-
-

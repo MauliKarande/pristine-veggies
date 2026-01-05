@@ -105,7 +105,7 @@
 <table>
     <tr>
         <th>Order ID</th>
-        <th>Date</th>
+        <th>Date and Time</th>
         <th>Customer</th>
         <th>Total</th>
         <th>Status</th>
@@ -116,7 +116,25 @@
     {% for order in orders %}
     <tr>
         <td>{{ order.ord_id }}</td>
-        <td>{{ order.ord_date }}</td>
+       <td>
+    {{ order.ord_created_at|date:"d M Y" }}<br>
+    <small style="color:#555;">
+        {{ order.ord_created_at|time:"H:i:s" }}
+    </small>
+
+    <br>
+
+    <small>
+        <strong>Payment:</strong>
+        {% if order.ord_payment_at %}
+            {{ order.ord_payment_at|date:"d M Y" }}
+            {{ order.ord_payment_at|time:"H:i:s" }}
+        {% else %}
+            <span style="color:orange;">Pending</span>
+        {% endif %}
+    </small>
+</td>
+
         <td>{{ order.c_id.c_fullname }}</td>
         <td>₹{{ order.ord_total_amount }}</td>
 

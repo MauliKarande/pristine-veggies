@@ -1,11 +1,21 @@
 from django.db import models
+from django.utils import timezone
 from accounts.models import Customer
 from products.models import Product
 
 
 class Order(models.Model):
     ord_id = models.AutoField(primary_key=True)
+
+    # EXISTING FIELD (DO NOT REMOVE)
     ord_date = models.DateField()
+
+    # ✅ NEW: Order placed date & time
+    ord_created_at = models.DateTimeField(default=timezone.now)
+
+    # ✅ NEW: Payment completed date & time
+    ord_payment_at = models.DateTimeField(null=True, blank=True)
+
     ord_total_amount = models.DecimalField(max_digits=10, decimal_places=2)
     ord_delivery_required = models.CharField(max_length=10)
     ord_status = models.CharField(max_length=20)
@@ -21,6 +31,7 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     item_id = models.AutoField(primary_key=True)
+
     item_quantity = models.IntegerField()
     item_price = models.DecimalField(max_digits=10, decimal_places=2)
 
@@ -33,11 +44,11 @@ class OrderItem(models.Model):
         Product,
         on_delete=models.CASCADE
     )
-    item_status = models.CharField(
-    max_length=10,
-    default='PLACED'
-    )
 
+    item_status = models.CharField(
+        max_length=10,
+        default='PLACED'
+    )
 
     def __str__(self):
         return str(self.item_id)

@@ -58,8 +58,8 @@
         }
 
         .profile-img {
-            width: 110px;
-            height: 110px;
+            width: 160px;
+            height: 160px;
             object-fit: cover;
             border-radius: 50%;
             border: 2px solid #27ae60;
@@ -191,14 +191,14 @@
         </div>
 
         <div class="menu-card">
-            <a href="{% url 'farmer_orders' %}">
+            <a href="{% url 'orders:farmer_orders' %}">
                 <span>📥</span>
                 Incoming Orders
             </a>
         </div>
 
         <div class="menu-card">
-            <a href="{% url 'farmer_order_history' %}">
+            <a href="{% url 'orders:farmer_order_history' %}">
                 <span>📜</span>
                 Order History
             </a>

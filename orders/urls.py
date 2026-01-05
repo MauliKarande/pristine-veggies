@@ -19,11 +19,14 @@ urlpatterns = [
     # PAYMENT
     # -----------------------------
     path('orders/payment/<int:order_id>/', views.payment_page, name='payment_page'),
-    path('orders/payment/confirm/<int:order_id>/', views.confirm_payment, name='confirm_payment'),
+    
 
     # -----------------------------
     # FARMER ORDERS (🔥 MISSING PART)
     # -----------------------------
+    # -----------------------------
+# FARMER ORDERS
+# -----------------------------
     path('farmer/orders/', views.farmer_orders, name='farmer_orders'),
     path('farmer/orders/accept/<int:order_id>/', views.accept_order, name='accept_order'),
     path('farmer/orders/reject/<int:order_id>/', views.reject_order, name='reject_order'),
@@ -33,4 +36,21 @@ urlpatterns = [
     # ADMIN ORDERS
     # -----------------------------
     path('admin/orders/', views.admin_orders, name='admin_orders'),
+    path('order-success/<int:order_id>/', views.order_success, name='order_success'),
+
+
+    path('orders/payment/confirm/<int:order_id>/', views.confirm_payment, name='confirm_payment'),
+    path('orders/payment/confirm/<int:order_id>/', views.confirm_payment, name='confirm_payment' ),
+    path('order-success/<int:order_id>/', views.order_success, name='order_success'),
+    path(
+    'orders/details/<int:order_id>/',
+    views.order_details,
+    name='order_details'
+),
+
+
+
+
+
+
 ]

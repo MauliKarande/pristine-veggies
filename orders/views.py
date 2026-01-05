@@ -1,13 +1,16 @@
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
 from django.contrib import messages
-from datetime import datetime   # ✅ PAYMENT ADDITION
+
 
 from accounts.models import Customer
 from products.models import Product
 from .models import Order, OrderItem
 from payment.models import Payment   # ✅ PAYMENT ADDITION
 from django.contrib.messages import get_messages
+import razorpay
+from django.conf import settings
+
 
 def clear_messages(request):
     storage = get_messages(request)
@@ -22,7 +25,7 @@ def clear_messages(request):
 def add_to_order(request, product_id):
     customer_id = request.session.get('customer_id')
     if not customer_id:
-        return redirect('customer_login')
+        return redirect('login')
 
     customer = get_object_or_404(Customer, c_id=customer_id)
     product = get_object_or_404(Product, pr_id=product_id)
@@ -85,7 +88,7 @@ def add_to_order(request, product_id):
 
     messages.success(
         request,
-      #  f'Added {qty} Kg of "{product.pr_name}" to cart.'
+        f'Added {qty} Kg of "{product.pr_name}" to cart.'
     )
 
     return redirect('home')
@@ -97,18 +100,21 @@ def add_to_order(request, product_id):
 def view_cart(request):
     customer_id = request.session.get('customer_id')
     if not customer_id:
-        return redirect('customer_login')
+        return redirect('login')
 
     try:
         order = Order.objects.get(c_id=customer_id, ord_status='CART')
         items = OrderItem.objects.filter(ord_id=order)
+        cart_count = items.count()
     except Order.DoesNotExist:
         order = None
         items = []
+        cart_count = 0
 
     return render(request, 'cart.html', {
         'order': order,
-        'items': items
+        'items': items,
+        'cart_count': cart_count
     })
 
 
@@ -177,7 +183,7 @@ def update_quantity(request, item_id):
 def place_order(request):
     customer_id = request.session.get('customer_id')
     if not customer_id:
-        return redirect('customer_login')
+        return redirect('login')
 
     order = get_object_or_404(Order, c_id=customer_id, ord_status='CART')
     items = OrderItem.objects.filter(ord_id=order)
@@ -193,15 +199,14 @@ def place_order(request):
 
         product.save()
 
-    # FINALIZE ORDER
+        # ✅ IMPORTANT: MARK ITEM AS PLACED
+        item.item_status = 'PLACED'
+        item.save()
+
     order.ord_status = 'PLACED'
-    order.ord_date = timezone.now().date()
+    order.ord_date = order.ord_created_at.date()
     order.save()
 
-   # messages.success(request, "Order placed successfully!")
-    return redirect('orders:payment_page', order_id=order.ord_id)
-
-    # ✅ PAYMENT FLOW CHANGE
     return redirect('orders:payment_page', order_id=order.ord_id)
 
 
@@ -212,7 +217,7 @@ def place_order(request):
 def my_orders(request):
     customer_id = request.session.get('customer_id')
     if not customer_id:
-        return redirect('customer_login')
+        return redirect('login')
 
     orders = Order.objects.filter(
         c_id=customer_id
@@ -258,9 +263,9 @@ def farmer_orders(request):
         return redirect('farmer_login')
 
     orders = Order.objects.filter(
-        orderitem__pr_id__f_id=farmer_id,
-        orderitem__item_status='PLACED'
-    ).distinct().order_by('-ord_date')
+    orderitem__pr_id__f_id=farmer_id,
+    orderitem__item_status='PLACED').distinct().order_by('-ord_date')
+
 
     return render(request, 'farmer_orders.html', {
         'orders': orders
@@ -276,7 +281,7 @@ def accept_order(request, order_id):
         item_status='PLACED'
     ).update(item_status='ACCEPTED')
 
-    return redirect('farmer_order_history')
+    return redirect('orders:farmer_order_history')
 
 
 def reject_order(request, order_id):
@@ -288,7 +293,7 @@ def reject_order(request, order_id):
         item_status='PLACED'
     ).update(item_status='REJECTED')
 
-    return redirect('farmer_order_history')
+    return redirect('orders:farmer_order_history')
 
 
 def farmer_order_history(request):
@@ -301,8 +306,9 @@ def farmer_order_history(request):
     ).distinct().order_by('-ord_date')
 
     return render(request, 'farmer_order_history.html', {
-        'orders': orders
-    })
+    'orders': orders
+})
+
 
 
 def order_details(request, order_id):
@@ -325,6 +331,7 @@ def order_details(request, order_id):
         if not visible_items.exists():
             messages.error(request, "You are not authorized to view this order.")
             return redirect('farmer_orders')
+
     else:
         return redirect('home')
 
@@ -332,6 +339,9 @@ def order_details(request, order_id):
         'order': order,
         'items': visible_items
     })
+
+
+    
 
 
 def admin_orders(request):
@@ -366,36 +376,127 @@ def admin_orders(request):
 # --------------------------------
 def payment_page(request, order_id):
     order = get_object_or_404(Order, ord_id=order_id)
-    return render(request, 'payment.html', {
-        'order': order
+
+    amount_paise = int(order.ord_total_amount * 100)
+
+    client = razorpay.Client(
+        auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+    )
+
+    razorpay_order = client.order.create({
+        "amount": amount_paise,
+        "currency": "INR",
+        "receipt": f"ORD-{order.ord_id}",
+        "payment_capture": 1
     })
+
+    # Save payment record
+    Payment.objects.create(
+        ord_id=order,
+        p_invoice_no=f"ORD-{order.ord_id}",
+        p_method="RAZORPAY",
+        p_status="PENDING",
+        p_amount=order.ord_total_amount,
+        razorpay_order_id=razorpay_order["id"]
+    )
+
+    return render(request, "payment.html", {
+        "order": order,
+        "razorpay_order_id": razorpay_order["id"],
+        "razorpay_key": settings.RAZORPAY_KEY_ID,
+        "amount": amount_paise,
+    })
+
+
+from django.views.decorators.csrf import csrf_exempt
+import hmac
+import hashlib
+
+
+@csrf_exempt
+def confirm_payment(request, order_id):
+    order = get_object_or_404(Order, ord_id=order_id)
+
+    payment = Payment.objects.filter(
+        ord_id=order,
+        p_status="PENDING"
+    ).last()
+
+    if not payment:
+        messages.error(request, "Payment record not found.")
+        return redirect('orders:payment_page', order_id=order.ord_id)
+
+    # Razorpay sends POST data
+    razorpay_payment_id = request.POST.get("razorpay_payment_id")
+    razorpay_order_id = request.POST.get("razorpay_order_id")
+    razorpay_signature = request.POST.get("razorpay_signature")
+
+    # 🔐 Signature verification
+    generated_signature = hmac.new(
+        settings.RAZORPAY_KEY_SECRET.encode(),
+        f"{razorpay_order_id}|{razorpay_payment_id}".encode(),
+        hashlib.sha256
+    ).hexdigest()
+
+    if generated_signature != razorpay_signature:
+        messages.error(request, "Payment verification failed.")
+        return redirect('orders:payment_page', order_id=order.ord_id)
+
+    # ✅ Payment verified
+    payment.p_status = "SUCCESS"
+    payment.razorpay_payment_id = razorpay_payment_id
+    payment.razorpay_signature = razorpay_signature
+    payment.save()
+
+    # ✅ Update order
+    order.ord_status = "PAID"
+    order.ord_payment_at = timezone.now()
+    order.save()
+
+    messages.success(request, "Payment successful!")
+
+    return redirect('orders:order_success', order_id=order.ord_id)
+
+
 
 
 # --------------------------------
 # CONFIRM PAYMENT (✅ NEW)
 # --------------------------------
-def confirm_payment(request, order_id):
-    if request.method == 'POST':
-        payment_method = request.POST.get('payment_method')
-        transaction_id = request.POST.get('transaction_id', '').strip()
 
-        order = get_object_or_404(Order, ord_id=order_id)
 
-        # ✅ FIX: invoice number must NEVER be NULL
-        if transaction_id:
-            invoice_no = transaction_id
-        else:
-            invoice_no = f"INV-ORD-{order.ord_id}"
 
-        Payment.objects.create(
-            ord_id=order,
-            p_amount=order.ord_total_amount,
-            p_method=payment_method,
-            p_status='SUCCESS',
-            p_invoice_no=invoice_no
-        )
+def order_success(request, order_id):
+    customer_id = request.session.get('customer_id')
+    if not customer_id:
+        return redirect('login')
 
-        clear_messages(request)
-        messages.success(request, "Payment recorded successfully!")
+    order = get_object_or_404(
+        Order,
+        ord_id=order_id,
+        c_id=customer_id
+    )
 
+    # Optional safety: ensure payment is done
+    if not order.ord_payment_at:
+        messages.error(request, "Payment not completed for this order.")
         return redirect('my_orders')
+
+    return render(request, 'order_success.html', {
+        'order': order
+    })
+
+from django.shortcuts import get_object_or_404, redirect
+from django.utils import timezone
+from django.contrib import messages
+from django.conf import settings
+import razorpay
+
+from orders.models import Order
+from payment.models import Payment
+
+
+
+
+
+

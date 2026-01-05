@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Pristine Veggies{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7f6;
+            padding-top: 80px;
+        }
+
+        /* ===== FIXED CUSTOMER HEADER ===== */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 70px;
+            background: #ffffff;
+            border-bottom: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            padding: 0 25px;
+            z-index: 1000;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .nav-links strong {
+            color: #2e7d32;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .nav-links a {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .nav-links a:hover {
+            color: #2e7d32;
+        }
+
+        .nav-links img {
+            width: 22px;
+            height: 22px;
+        }
+
+        /* ===== CART BADGE ===== */
+        .cart-link {
+            position: relative;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: red;
+            color: white;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== CUSTOMER HEADER (ALWAYS VISIBLE) ===== -->
+<div class="top-bar">
+    <div class="nav-links">
+
+        <!-- ✅ Welcome text only depends on customer_name -->
+        <strong>
+            Welcome,
+            {% if customer_name %}
+                {{ customer_name }}
+            {% else %}
+                Guest
+            {% endif %}
+        </strong>
+
+        <a href="{% url 'home' %}">
+            <img src="{% static 'images/icons/homeicon.png' %}">
+            Home
+        </a>
+
+        <a href="{% url 'orders:view_cart' %}" class="cart-link">
+            <img src="{% static 'images/icons/carticon.jpg' %}">
+            {% if cart_count > 0 %}
+                <span class="cart-badge">{{ cart_count }}</span>
+            {% endif %}
+            Cart
+        </a>
+
+        <a href="{% url 'orders:my_orders' %}">
+            <img src="{% static 'images/icons/ordersicon.png' %}">
+            Orders
+        </a>
+
+        <a href="{% url 'customer_profile' %}">
+            <img src="{% static 'images/icons/profileicon.png' %}">
+            Profile
+        </a>
+
+        <a href="{% url 'logout' %}">
+            <img src="{% static 'images/icons/logouticon.png' %}">
+            Logout
+        </a>
+
+    </div>
+</div>
+
+<!-- ===== PAGE CONTENT ===== -->
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
