@@ -3,4 +3,4 @@ Pillow>=10.0
 gunicorn
 python-dotenv
 whitenoise
-
+razorpay
